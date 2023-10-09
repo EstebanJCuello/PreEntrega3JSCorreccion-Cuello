@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<h1>Bienvenido a la Tienda de Comestibles</h1>
+<p>¿Desea comprar algún producto?</p>
+<button id="comprarSi">Sí</button>
+<button id="comprarNo">No</button>
+<div id="productos"></div>
+<div id="carrito">
+    <h2>Carrito de Compras</h2>
+    <ul id="carritoLista"></ul>
+    <p id="total"></p>
+</div>
+
+<script>
+    const productos = [
+        { nombre: "Fideos", precio: 350 },
+        { nombre: "Arroz", precio: 400 },
+        { nombre: "Ravioles", precio: 500 },
+        { nombre: "Harina", precio: 250 },
+        { nombre: "Lentejas", precio: 300 },
+    ];
+
+    let carrito = [];
+
+    function getPrecioProducto(nombre) {
+        const productoEncontrado = productos.find(producto => producto.nombre === nombre);
+        return productoEncontrado ? productoEncontrado.precio : 0;
+    }
+
+    function mostrarProductos() {
+        const productosDiv = document.getElementById("productos");
+        productosDiv.innerHTML = "<h2>Productos Disponibles</h2>";
+        const listaProductos = document.createElement("ul");
+        productos.forEach(producto => {
+            const item = document.createElement("li");
+            item.textContent = `${producto.nombre} - ${producto.precio}$`;
+            listaProductos.appendChild(item);
+        });
+        productosDiv.appendChild(listaProductos);
+    }
+
+    document.getElementById("comprarSi").addEventListener("click", function () {
+        mostrarProductos();
+    });
+
+    document.getElementById("comprarNo").addEventListener("click", function () {
+        alert("Gracias por venir.");
+    });
+
+    function actualizarCarrito() {
+        const carritoLista = document.getElementById("carritoLista");
+        carritoLista.innerHTML = "";
+        carrito.forEach(item => {
+            const itemLi = document.createElement("li");
+            itemLi.textContent = `${item.producto} - Unidades: ${item.unidades} - Total: ${item.unidades * item.precio}$`;
+            carritoLista.appendChild(itemLi);
+        });
+    }
+
+    function calcularTotal() {
+        const totalDiv = document.getElementById("total");
+        const total = carrito.reduce((acc, el) => acc + el.precio * el.unidades, 0);
+        totalDiv.textContent = `Total a pagar por su compra es: ${total}$`;
+    }
+
+    document.getElementById("comprarSi").addEventListener("click", function () {
+        mostrarProductos();
+    });
+
+    document.getElementById("comprarNo").addEventListener("click", function () {
+        alert("Gracias por venir.");
+    });
+
+    const productosDiv = document.getElementById("productos");
+
+    productosDiv.addEventListener("click", function (e) {
+        if (e.target.tagName === "LI") {
+            const producto = e.target.textContent.split(" - ")[0];
+            const precio = getPrecioProducto(producto);
+            if (precio === 0) {
+                alert("No tenemos ese producto");
+            } else {
+                const unidades = prompt(`¿Cuántas unidades de ${producto} desea llevar?`);
+                if (unidades !== null) {
+                    const unidadesNum = parseInt(unidades);
+                    if (!isNaN(unidadesNum) && unidadesNum > 0) {
+                        carrito.push({ producto, unidades: unidadesNum, precio });
+                        actualizarCarrito();
+                        calcularTotal();
+                    } else {
+                        alert("Por favor, ingrese una cantidad válida de unidades (mayor que 0).");
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
